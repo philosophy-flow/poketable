@@ -1,3 +1,4 @@
+import "./styles.css";
 import "table2excel";
 import "./multiselect-dropdown";
 
