@@ -1,3 +1,6 @@
+// Code Attribution: github: admirhodzic/multi-select-dropdown
+// https://github.com/admirhodzic/multiselect-dropdown
+
 var style = document.createElement("style");
 style.setAttribute("id", "multiselect_dropdown_styles");
 style.innerHTML = `

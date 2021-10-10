@@ -1,4 +1,5 @@
 import "table2excel";
+import "./multiselect-dropdown";
 
 const idDisplay = document.getElementById("poke-id");
 const pokeTable = document.getElementById("poke-table");
@@ -19,7 +20,6 @@ const typeSelector = document.getElementById("type-selector");
 // ------------------------
 
 typeSelector.onchange = () => {
-  console.log(typeSelector.length);
   main();
 };
 // ------------------------
@@ -36,8 +36,21 @@ function fetchInitialData() {
 }
 
 function exportToExcel() {
+  let exportTable = pokeTable.cloneNode(true);
+  exportTable.removeAttribute("id");
+
+  let entries = Array.from(exportTable.tBodies[0].children);
+
+  for (let i = 0; i < entries.length; i++) {
+    const entry = entries[i];
+    if (entry.classList.contains("display-none")) {
+      console.log(entry);
+      entry.remove();
+    }
+  }
+
   const table2excel = new Table2Excel();
-  table2excel.export(pokeTable);
+  table2excel.export(exportTable);
 }
 
 function displayIds(arr) {
@@ -130,17 +143,16 @@ async function main(url = "") {
   if (types.length === 0) {
     types = "ALL";
   }
-  console.log(types);
 
   // go through table and for all entries whose type
-  // does NOT match, add class hidden
+  // does NOT match, add class display-none
   const tableArr = Array.from(tableBody.children);
   if (types === "ALL") {
-    tableArr.forEach((row) => row.classList.remove("hidden"));
+    tableArr.forEach((row) => row.classList.remove("display-none"));
   } else {
     tableArr.forEach((row) => {
       if (!types.includes(row.children[2].innerHTML)) {
-        row.style.display = "none";
+        row.classList.add("display-none");
       }
     });
   }

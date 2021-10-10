@@ -8,3 +8,4 @@ Application build with vanilla JS that fetches Pokemon data from PokeAPI and ren
 
 - [Webpack](https://www.npmjs.com/package/webpack)
 - [table2excell](https://www.npmjs.com/package/table2excel)
+- [multiselect-dropdown](https://github.com/admirhodzic/multiselect-dropdown)
