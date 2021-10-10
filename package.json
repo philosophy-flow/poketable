@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "table2excel": "^1.0.4",
-    "tableexport": "^5.2.0",
     "webpack-dev-server": "^4.3.1"
   }
 }
