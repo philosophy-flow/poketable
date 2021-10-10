@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PokeTable</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1>PokeTable</h1>
+    <button id="get-pokemon-btn">Get Pokemon!</button>
+
+    <p id="poke-id" class="poke-id"></p>
+    <table id="poke-table">
+      <thead>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Type</th>
+      </thead>
+      <tbody id="table-body"></tbody>
+    </table>
+
+    <div class="pagination-container">
+      <button id="prev-btn" class="hidden">Previous</button>
+      <button id="next-btn" class="hidden">Next</button>
+    </div>
+    <button id="export-btn" class="hidden">Export</button>
+
+    <script src="bundle.js"></script>
+  </body>
+</html>

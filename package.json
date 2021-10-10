@@ -1,0 +1,23 @@
+{
+  "name": "pokemon-webpack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack-dev-server",
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0"
+  },
+  "dependencies": {
+    "table2excel": "^1.0.4",
+    "tableexport": "^5.2.0",
+    "webpack-dev-server": "^4.3.1"
+  }
+}

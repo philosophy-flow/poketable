@@ -1,0 +1,35 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  text-align: center;
+}
+
+h1 {
+  margin: 1rem 0;
+}
+
+table {
+  table-layout: fixed;
+  width: 70%;
+  margin: 1rem auto;
+  border-collapse: collapse;
+  border: 3px solid purple;
+}
+
+.hidden {
+  display: none;
+}
+
+.pagination-container {
+  margin: 0.5rem 0;
+}
+
+.poke-id {
+  text-align: left;
+  width: 70%;
+  margin: 0 auto;
+}
