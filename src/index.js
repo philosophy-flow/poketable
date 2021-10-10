@@ -4,51 +4,43 @@ import "./multiselect-dropdown";
 const idDisplay = document.getElementById("poke-id");
 const pokeTable = document.getElementById("poke-table");
 const tableBody = pokeTable.tBodies[0];
+const typeSelectContainer = document.getElementById("type-select-container");
 
 const getPokemonBtn = document.getElementById("get-pokemon-btn");
-const prevBtn = document.getElementById("prev-btn");
-const nextBtn = document.getElementById("next-btn");
 const exportBtn = document.getElementById("export-btn");
-
-const typeSelectionContainer = document.getElementById(
-  "type-selection-container"
-);
 const typeSelector = document.getElementById("type-selector");
 
-// ------------------------
+const prevBtn = document.getElementById("prev-btn");
+const nextBtn = document.getElementById("next-btn");
 
-// ------------------------
-
-typeSelector.onchange = () => {
-  main();
-};
 // ------------------------
 
 getPokemonBtn.addEventListener("click", fetchInitialData);
 exportBtn.addEventListener("click", exportToExcel);
+typeSelector.addEventListener("change", () => main());
 
 function fetchInitialData() {
   main("https://pokeapi.co/api/v2/pokemon?limit=25");
-  getPokemonBtn.classList.add("hidden");
   exportBtn.classList.remove("hidden");
-  typeSelectionContainer.classList.remove("hidden");
+  typeSelectContainer.classList.remove("hidden");
+  getPokemonBtn.classList.add("hidden");
   getPokemonBtn.removeEventListener("click", fetchInitialData);
 }
 
 function exportToExcel() {
+  // clone table so that hidden nodes can be removed before export
   let exportTable = pokeTable.cloneNode(true);
   exportTable.removeAttribute("id");
 
+  // search for entries that are hidden and remove from cloned table
   let entries = Array.from(exportTable.tBodies[0].children);
-
-  for (let i = 0; i < entries.length; i++) {
-    const entry = entries[i];
+  entries.forEach((entry) => {
     if (entry.classList.contains("display-none")) {
-      console.log(entry);
       entry.remove();
     }
-  }
+  });
 
+  // export cloned table
   const table2excel = new Table2Excel();
   table2excel.export(exportTable);
 }
@@ -85,6 +77,24 @@ function renderPokemon(pokeDetails) {
   typeCell.innerHTML = `${pokeDetails.primaryType}`;
 }
 
+function getTypes() {
+  // look through multi-select dropdown and find values that are checked
+  const multiSelectorOptions = Array.from(
+    document.querySelector(".multiselect-dropdown-list").children
+  );
+
+  // add selected types to typesArr
+  let typeArr = [];
+  multiSelectorOptions.forEach((type) => {
+    const classList = type.classList;
+    if (classList.contains("checked")) {
+      typeArr.push(type.children[1].innerHTML);
+    }
+  });
+
+  return typeArr;
+}
+
 async function fetchPokemon(url) {
   // fetch arr of pokemon + pagination urls
   const res = await fetch(url);
@@ -105,6 +115,8 @@ async function fetchPokemon(url) {
 
 // main function
 async function main(url = "") {
+  // if url passed to main, then details come from API call
+  // if no url passed to main, then details come from existing table
   let pokeDetailsArr, prevUrl, nextUrl;
   if (url) {
     // fetch pokemon details + pagination urls
@@ -139,40 +151,18 @@ async function main(url = "") {
   pokeDetailsArr.forEach((detail) => renderPokemon(detail));
 
   // look through multi-select dropdown and find values that are checked
-  let types = getType();
-  if (types.length === 0) {
-    types = "ALL";
-  }
+  let typesArr = getTypes();
 
-  // go through table and for all entries whose type
-  // does NOT match, add class display-none
+  // compare selected types to each row's type, hide row if no match
   const tableArr = Array.from(tableBody.children);
-  if (types === "ALL") {
-    tableArr.forEach((row) => row.classList.remove("display-none"));
-  } else {
+  if (typesArr.length > 0) {
     tableArr.forEach((row) => {
-      if (!types.includes(row.children[2].innerHTML)) {
+      const rowType = row.children[2].innerHTML;
+      if (!typesArr.includes(rowType)) {
         row.classList.add("display-none");
       }
     });
   }
-}
-
-// -----------------
-function getType() {
-  // look through multi-select dropdown and find values that are checked
-  const multiSelectorOptions = Array.from(
-    document.querySelector(".multiselect-dropdown-list").children
-  );
-
-  let typeArr = [];
-  multiSelectorOptions.forEach((type) => {
-    const classList = Array.from(type.classList);
-    if (classList.includes("checked")) {
-      typeArr.push(type.children[1].innerHTML);
-    }
-  });
-  return typeArr;
 }
 
 // -----------------
