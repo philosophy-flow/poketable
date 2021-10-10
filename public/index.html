@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PokeTable</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="multiselect-dropdown.js"></script>
   </head>
   <body>
     <h1>PokeTable</h1>
@@ -21,11 +22,40 @@
       <tbody id="table-body"></tbody>
     </table>
 
-    <div class="pagination-container">
-      <button id="prev-btn" class="hidden">Previous</button>
-      <button id="next-btn" class="hidden">Next</button>
-    </div>
-    <button id="export-btn" class="hidden">Export</button>
+    <section class="control-panel">
+      <div class="pagination-container">
+        <button id="prev-btn" class="hidden">Previous</button>
+        <button id="next-btn" class="hidden">Next</button>
+      </div>
+
+      <button id="export-btn" class="export-btn hidden">Export</button>
+
+      <div
+        id="type-selection-container"
+        class="type-selection-container hidden"
+      >
+        <label for="type-selector">Filter by Type:</label>
+        <select id="type-selector" multiple multiselect-max-items="1">
+          <option>normal</option>
+          <option>fire</option>
+          <option>water</option>
+          <option>grass</option>
+          <option>electric</option>
+          <option>ice</option>
+          <option>fighting</option>
+          <option>poison</option>
+          <option>ground</option>
+          <option>psychic</option>
+          <option>bug</option>
+          <option>rock</option>
+          <option>ghost</option>
+          <option>dark</option>
+          <option>dragon</option>
+          <option>steel</option>
+          <option>fairy</option>
+        </select>
+      </div>
+    </section>
 
     <script src="bundle.js"></script>
   </body>

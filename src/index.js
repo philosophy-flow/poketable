@@ -9,15 +9,29 @@ const prevBtn = document.getElementById("prev-btn");
 const nextBtn = document.getElementById("next-btn");
 const exportBtn = document.getElementById("export-btn");
 
+const typeSelectionContainer = document.getElementById(
+  "type-selection-container"
+);
+const typeSelector = document.getElementById("type-selector");
+
+// ------------------------
+
+// ------------------------
+
+typeSelector.onchange = () => {
+  console.log(typeSelector.length);
+  main();
+};
 // ------------------------
 
 getPokemonBtn.addEventListener("click", fetchInitialData);
 exportBtn.addEventListener("click", exportToExcel);
 
 function fetchInitialData() {
-  fetchPokemon("https://pokeapi.co/api/v2/pokemon?limit=25");
+  main("https://pokeapi.co/api/v2/pokemon?limit=25");
   getPokemonBtn.classList.add("hidden");
   exportBtn.classList.remove("hidden");
+  typeSelectionContainer.classList.remove("hidden");
   getPokemonBtn.removeEventListener("click", fetchInitialData);
 }
 
@@ -37,7 +51,7 @@ function handlePaginationBtn(url, btn) {
   // create handler to fetch next/prev data set
   if (url) {
     btn.classList.remove("hidden");
-    btn.onclick = () => fetchPokemon(url);
+    btn.onclick = () => main(url);
   } else {
     btn.classList.add("hidden");
   }
@@ -55,14 +69,11 @@ function renderPokemon(pokeDetails) {
   // insert details into each cell
   idCell.innerHTML = `${pokeDetails.id}`;
   nameCell.innerHTML = `${pokeDetails.name}`;
-  typeCell.innerHTML = `${pokeDetails.types[0]["type"].name}`;
+  typeCell.innerHTML = `${pokeDetails.primaryType}`;
 }
 
-// ------------------------
-
-// main function
 async function fetchPokemon(url) {
-  // fetch arr of pokemon
+  // fetch arr of pokemon + pagination urls
   const res = await fetch(url);
   const data = await res.json();
   const allPokemon = data.results;
@@ -74,6 +85,37 @@ async function fetchPokemon(url) {
     })
   );
 
+  return [pokeDetailsArr, data.previous, data.next];
+}
+
+// ------------------------
+
+// main function
+async function main(url = "") {
+  let pokeDetailsArr, prevUrl, nextUrl;
+  if (url) {
+    // fetch pokemon details + pagination urls
+    [pokeDetailsArr, prevUrl, nextUrl] = await fetchPokemon(url);
+    // format data
+    pokeDetailsArr = pokeDetailsArr.map((pokemon) => ({
+      id: pokemon.id,
+      name: pokemon.name,
+      primaryType: pokemon.types[0]["type"].name,
+    }));
+
+    // update pagination buttons visibility + request url
+    handlePaginationBtn(prevUrl, prevBtn);
+    handlePaginationBtn(nextUrl, nextBtn);
+  } else {
+    pokeDetailsArr = Array.from(tableBody.children).map((row) => {
+      return {
+        id: row.children[0].innerHTML,
+        name: row.children[1].innerHTML,
+        primaryType: row.children[2].innerHTML,
+      };
+    });
+  }
+
   // display IDs for current pokemon above table
   displayIds(pokeDetailsArr);
 
@@ -83,9 +125,42 @@ async function fetchPokemon(url) {
   // render each pokemon into table
   pokeDetailsArr.forEach((detail) => renderPokemon(detail));
 
-  // update pagination buttons visibility + request url
-  handlePaginationBtn(data.previous, prevBtn);
-  handlePaginationBtn(data.next, nextBtn);
+  // look through multi-select dropdown and find values that are checked
+  let types = getType();
+  if (types.length === 0) {
+    types = "ALL";
+  }
+  console.log(types);
+
+  // go through table and for all entries whose type
+  // does NOT match, add class hidden
+  const tableArr = Array.from(tableBody.children);
+  if (types === "ALL") {
+    tableArr.forEach((row) => row.classList.remove("hidden"));
+  } else {
+    tableArr.forEach((row) => {
+      if (!types.includes(row.children[2].innerHTML)) {
+        row.style.display = "none";
+      }
+    });
+  }
+}
+
+// -----------------
+function getType() {
+  // look through multi-select dropdown and find values that are checked
+  const multiSelectorOptions = Array.from(
+    document.querySelector(".multiselect-dropdown-list").children
+  );
+
+  let typeArr = [];
+  multiSelectorOptions.forEach((type) => {
+    const classList = Array.from(type.classList);
+    if (classList.includes("checked")) {
+      typeArr.push(type.children[1].innerHTML);
+    }
+  });
+  return typeArr;
 }
 
 // -----------------
