@@ -56,10 +56,6 @@ button:hover {
   background-color: lightgrey;
 }
 
-button:first-child {
-  background-color: lightgreen;
-}
-
 tr:hover {
   background-color: lightgrey;
 }
